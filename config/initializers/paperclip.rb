@@ -40,6 +40,16 @@ if ENV['S3_ENABLED'] == 'true'
     Paperclip::Attachment.default_options[:url]           = ':s3_alias_url'
     Paperclip::Attachment.default_options[:s3_host_alias] = ENV['S3_CLOUDFRONT_HOST']
   end
+elsif ENV['AZURE_ENABLED'] == 'true'
+  Paperclip::Attachment.default_options[:path]           = '/:class/:attachment/:id_partition/:style/:filename'
+  Paperclip::Attachment.default_options[:storage] = :azure
+  Paperclip::Attachment.default_options[:url] = ':azure_path_url'
+  Paperclip::Attachment.default_options[:storage] = :azure
+  Paperclip::Attachment.default_options[:azure_credentials] = {
+    storage_account_name: ENV['AZURE_STORAGE_ACCOUNT'],
+    access_key:           ENV['AZURE_ACCESS_KEY'],
+    container:            ENV['AZURE_CONTAINER_NAME']
+  }
 else
   Paperclip::Attachment.default_options[:path] = (ENV['PAPERCLIP_ROOT_PATH'] || ':rails_root/public/system') + '/:class/:attachment/:id_partition/:style/:filename'
   Paperclip::Attachment.default_options[:url]  = (ENV['PAPERCLIP_ROOT_URL'] || '/system') + '/:class/:attachment/:id_partition/:style/:filename'
