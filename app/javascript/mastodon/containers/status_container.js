@@ -11,16 +11,16 @@ import {
   favourite,
   unreblog,
   unfavourite,
+  pin,
+  unpin,
 } from '../actions/interactions';
 import {
   blockAccount,
   muteAccount,
 } from '../actions/accounts';
-import { muteStatus, unmuteStatus, deleteStatus } from '../actions/statuses';
+import { muteStatus, unmuteStatus, deleteStatus, setStatusHeight } from '../actions/statuses';
 import { initReport } from '../actions/reports';
 import { openModal } from '../actions/modal';
-import { createSelector } from 'reselect';
-import { isMobile } from '../is_mobile';
 import { defineMessages, injectIntl, FormattedMessage } from 'react-intl';
 
 const messages = defineMessages({
@@ -37,6 +37,7 @@ const makeMapStateToProps = () => {
     status: getStatus(state, props.id),
     me: state.getIn(['meta', 'me']),
     boostModal: state.getIn(['meta', 'boost_modal']),
+    deleteModal: state.getIn(['meta', 'delete_modal']),
     autoPlayGif: state.getIn(['meta', 'auto_play_gif']),
   });
 
@@ -73,12 +74,28 @@ const mapDispatchToProps = (dispatch, { intl }) => ({
     }
   },
 
+  onPin (status) {
+    if (status.get('pinned')) {
+      dispatch(unpin(status));
+    } else {
+      dispatch(pin(status));
+    }
+  },
+
+  onEmbed (status) {
+    dispatch(openModal('EMBED', { url: status.get('url') }));
+  },
+
   onDelete (status) {
-    dispatch(openModal('CONFIRM', {
-      message: intl.formatMessage(messages.deleteMessage),
-      confirm: intl.formatMessage(messages.deleteConfirm),
-      onConfirm: () => dispatch(deleteStatus(status.get('id'))),
-    }));
+    if (!this.deleteModal) {
+      dispatch(deleteStatus(status.get('id')));
+    } else {
+      dispatch(openModal('CONFIRM', {
+        message: intl.formatMessage(messages.deleteMessage),
+        confirm: intl.formatMessage(messages.deleteConfirm),
+        onConfirm: () => dispatch(deleteStatus(status.get('id'))),
+      }));
+    }
   },
 
   onMention (account, router) {
@@ -119,6 +136,10 @@ const mapDispatchToProps = (dispatch, { intl }) => ({
     } else {
       dispatch(muteStatus(status.get('id')));
     }
+  },
+
+  onHeightChange (status, height) {
+    dispatch(setStatusHeight(status.get('id'), height));
   },
 
 });
