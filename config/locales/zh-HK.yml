@@ -152,12 +152,10 @@ zh-HK:
     title: 管理
   application_mailer:
     settings: 修改電郵設定︰%{link}
-    signature: 來自 %{instance} 的 Mastodon 通知
     view: 進入瀏覽︰
   applications:
     invalid_url: 所提供的網址不正確
   auth:
-    change_password: 登入資訊
     didnt_get_confirmation: 沒有收到確認指示電郵？
     forgot_password: 忘記了密碼？
     login: 登入
@@ -165,6 +163,7 @@ zh-HK:
     register: 登記
     resend_confirmation: 重發確認指示電郵
     reset_password: 重設密碼
+    security: 登入資訊
     set_new_password: 設定新密碼
   authorize_follow:
     error: 對不起，尋找這個跨站用戶的過程發生錯誤
@@ -242,8 +241,8 @@ zh-HK:
         one: "自從上次登入以來，你收到 1 則新的通知 \U0001F418"
         other: "自從上次登入以來，你收到 %{count} 則新的通知 \U0001F418"
     favourite:
-      body: 你的文章獲得 %{name} 的喜愛
-      subject: "%{name} 喜歡你的文章"
+      body: 你的文章是 %{name} 的最愛！
+      subject: "%{name} 收藏了你的文章"
     follow:
       body: "%{name} 開始關注你！"
       subject: "%{name} 現正關注你"

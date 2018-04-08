@@ -15,15 +15,28 @@ class REST::StatusSerializer < ActiveModel::Serializer
   belongs_to :account, serializer: REST::AccountSerializer
 
   has_many :media_attachments, serializer: REST::MediaAttachmentSerializer
-  has_many :mentions
+  has_many :ordered_mentions, key: :mentions
   has_many :tags
+  has_many :emojis, serializer: REST::CustomEmojiSerializer
+
+  def id
+    object.id.to_s
+  end
+
+  def in_reply_to_id
+    object.in_reply_to_id&.to_s
+  end
+
+  def in_reply_to_account_id
+    object.in_reply_to_account_id&.to_s
+  end
 
   def current_user?
     !current_user.nil?
   end
 
   def uri
-    TagManager.instance.uri_for(object)
+    OStatus::TagManager.instance.uri_for(object)
   end
 
   def content
@@ -73,6 +86,10 @@ class REST::StatusSerializer < ActiveModel::Serializer
       %w(public unlisted).include?(object.visibility)
   end
 
+  def ordered_mentions
+    object.mentions.to_a.sort_by(&:id)
+  end
+
   class ApplicationSerializer < ActiveModel::Serializer
     attributes :name, :website
   end
@@ -81,7 +98,7 @@ class REST::StatusSerializer < ActiveModel::Serializer
     attributes :id, :username, :url, :acct
 
     def id
-      object.account_id
+      object.account_id.to_s
     end
 
     def username

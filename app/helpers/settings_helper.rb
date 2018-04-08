@@ -10,11 +10,13 @@ module SettingsHelper
     eo: 'Esperanto',
     es: 'Español',
     fa: 'فارسی',
+    gl: 'Galego',
     fi: 'Suomi',
     fr: 'Français',
     he: 'עברית',
     hr: 'Hrvatski',
     hu: 'Magyar',
+    hy: 'Հայերեն',
     id: 'Bahasa Indonesia',
     io: 'Ido',
     it: 'Italiano',
@@ -27,6 +29,10 @@ module SettingsHelper
     pt: 'Português',
     'pt-BR': 'Português do Brasil',
     ru: 'Русский',
+    sk: 'Slovensky',
+    sr: 'Српски',
+    'sr-Latn': 'Srpski (latinica)',
+    sv: 'Svenska',
     th: 'ภาษาไทย',
     tr: 'Türkçe',
     uk: 'Українська',
@@ -41,7 +47,7 @@ module SettingsHelper
   end
 
   def filterable_languages
-    I18n.available_locales.map { |locale| locale.to_s.split('-').first.to_sym }.uniq
+    LanguageDetector.instance.language_names.select(&HUMAN_LOCALES.method(:key?))
   end
 
   def hash_to_object(hash)
